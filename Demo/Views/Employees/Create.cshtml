@@ -1,0 +1,81 @@
+﻿@model Demo.Models.Employee
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Register new employee</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" method="post" role="form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label"> Role </label>
+                <div>
+                    <div>
+                        <input type="radio" name="role" value="Employee" checked onchange="AdjustForm(this)" /> Employee (rank 1-5) @* Default value *@
+                    </div>
+                    <div>
+                        <input type="radio" name="role" value="Manager" onchange="AdjustForm(this)" /> Manager (rank 6-9)
+                    </div>
+                    <div>
+                        @if(ViewBag.CEOExists == true)
+                        {
+                            <input type="radio" name="role" value="CEO" disabled />
+                        }
+                        else{
+                            <input type="radio" name="role" value="CEO" onchange="AdjustForm(this)" />
+                        }
+                        CEO (rank 10)
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Rank</label>
+                <div id="rankDiv">
+                    <input type="number" min="1" max="5" value="1" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="ManagerId" class="control-label"></label>
+                <div>
+                    <select id="employeeSelect" asp-for="ManagerId" class="form-control" asp-items="ViewBag.Managers">
+                        <option selected disabled>Select a manager</option>
+                    </select>
+                    <select id="managerSelect" asp-for="ManagerId" class="form-control" asp-items="ViewBag.ManagersAndCEO" style="display:none;">
+                        <option selected disabled>Select a manager</option>
+                        <option>No Manager</option>
+                    </select>
+                    <select id="ceoSelect" asp-for="ManagerId" class="form-control" style="display:none;" disabled>
+                        <option>No manager</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <input type="submit" value="Save new employee" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
