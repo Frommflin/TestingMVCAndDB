@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Demo.Data;
@@ -24,26 +20,18 @@ namespace Demo.Controllers
         {
             // Ordering data by role. CEO -> Manager -> Employee
             var demoContext = _context.Employees.Include(e => e.Manager).OrderByDescending(x => x.IsCEO).ThenByDescending(x => x.IsManager);
+
+            Employee ceo = _context.Employees.FirstOrDefault(x => x.IsCEO == true);
+            if (ceo == null)
+            {
+                ViewData["CEOExists"] = false;
+            }
+            else
+            {
+                ViewData["CEOExists"] = true;
+            }
+
             return View(await demoContext.ToListAsync());
-        }
-
-        // GET: Employees/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Employees == null)
-            {
-                return NotFound();
-            }
-
-            var employee = await _context.Employees
-                .Include(e => e.Manager)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (employee == null)
-            {
-                return NotFound();
-            }
-
-            return View(employee);
         }
 
         // GET: Employees/Create
@@ -77,7 +65,7 @@ namespace Demo.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ManagerId"] = new SelectList(_context.Employees, "Id", "Id", employee.ManagerId);
+
             return View(employee);
         }
 
@@ -89,26 +77,38 @@ namespace Demo.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees.FindAsync(id);
+            Employee employee = await _context.Employees.FindAsync(id);
             if (employee == null)
             {
                 return NotFound();
             }
-            ViewData["ManagerId"] = new SelectList(_context.Employees, "Id", "Id", employee.ManagerId);
+
+            ViewData["Managers"] = new SelectList(_context.Employees.Where(x => x.IsManager == true), "Id", "Id");
+            ViewData["ManagersAndCEO"] = new SelectList(_context.Employees.Where(x => (x.IsCEO == true || x.IsManager == true)), "Id", "Id");
+
+            Employee ceo = _context.Employees.FirstOrDefault(x => x.IsCEO == true);
+            if (ceo == null || employee.IsCEO == true)
+            {
+                ViewData["CEOExists"] = false;
+            }
+            else
+            {
+                ViewData["CEOExists"] = true;
+            }
+
             return View(employee);
         }
 
         // POST: Employees/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Salary,IsCEO,IsManager,ManagerId")] Employee employee)
+        public async Task<IActionResult> Edit(int id, string firstName, string lastName, string role, int rank, string managerId, [Bind("Id")] Employee employee)
         {
             if (id != employee.Id)
             {
                 return NotFound();
             }
+
+            employee = Utilities.EditEmployee(employee, firstName, lastName, role, rank, managerId);
 
             if (ModelState.IsValid)
             {
@@ -130,7 +130,7 @@ namespace Demo.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ManagerId"] = new SelectList(_context.Employees, "Id", "Id", employee.ManagerId);
+
             return View(employee);
         }
 

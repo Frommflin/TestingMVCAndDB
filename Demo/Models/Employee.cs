@@ -17,7 +17,6 @@ namespace Demo.Models
         [StringLength(50)]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "Fitting message for salary error")]
         public decimal Salary { get; set; }
 
         [Required]

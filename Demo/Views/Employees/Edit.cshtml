@@ -2,13 +2,26 @@
 
 @{
     ViewData["Title"] = "Edit";
+    string role;
+    decimal salary = Model.Salary;
+}
+@if (Model.IsCEO == true)
+{
+    role = "CEO";
+}
+else if (Model.IsManager == true)
+{
+    role = "Manager";
+}
+else
+{
+    role = "Employee";
 }
 
-<h1>Edit</h1>
+<h1>Edit Employee</h1>
 
-<h4>Employee</h4>
 <hr />
-<div class="row">
+<div class="row" onload="alert('loaded edit page')">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -24,27 +37,75 @@
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Salary" class="control-label"></label>
-                <input asp-for="Salary" class="form-control" />
-                <span asp-validation-for="Salary" class="text-danger"></span>
+                <label class="control-label"> Role </label>
+                <div id="editRadioDiv">
+                    <div>
+                        @if(role == "Employee")
+                        {
+                            <input type="radio" id="EditEmployee" name="editRole" value="Employee" onchange="AdjustEditForm(this)" checked />
+                        }
+                        else
+                        {
+                            <input type="radio" id="EditEmployee" name="editRole" value="Employee" onchange="AdjustEditForm(this)" />
+                        }
+                        Employee (rank 1-5)
+                    </div>
+                    <div>
+                        @if (role == "Manager")
+                        {
+                            <input type="radio" id="EditManager" name="editRole" value="Manager" onchange="AdjustEditForm(this)" checked/>
+                        }
+                        else
+                        {
+                            <input type="radio" id="EditManager" name="editRole" value="Manager" onchange="AdjustEditForm(this)" />
+                        }
+                         Manager (rank 6-9)
+                    </div>
+                    <div>
+                        @if (ViewBag.CEOExists == true)
+                        {
+                            <input type="radio" name="editRole" value="CEO" disabled />
+                        }
+                        else
+                        {
+                            @if (role == "CEO")
+                            {
+                                <input type="radio" id="EditCEO" name="editRole" value="CEO" onchange="AdjustEditForm(this)" checked />
+                            }
+                            else
+                            {
+                                <input type="radio" id="EditCEO" name="editRole" value="CEO" onchange="AdjustEditForm(this)" />
+                            }
+                        }
+                        CEO (rank 10)
+                    </div>
+                </div>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsCEO" /> @Html.DisplayNameFor(model => model.IsCEO)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsManager" /> @Html.DisplayNameFor(model => model.IsManager)
-                </label>
+            <div class="form-group">
+                <div>Current rank: (Current rank here)</div> @* Fix this to dynamic value *@
+                <label class="control-label">New rank</label>
+                <div id="rankDiv">
+                    <input type="number" name="rank" min="1" max="5" value="1" class="form-control" />
+                </div>
             </div>
             <div class="form-group">
                 <label asp-for="ManagerId" class="control-label"></label>
-                <select asp-for="ManagerId" class="form-control" asp-items="ViewBag.ManagerId"></select>
-                <span asp-validation-for="ManagerId" class="text-danger"></span>
+                <div>
+                    <select id="employeeSelect" asp-for="ManagerId" class="form-control" asp-items="ViewBag.Managers">
+                        <option selected disabled>Select a manager</option>
+                    </select>
+                    <select id="managerSelect" asp-for="ManagerId" class="form-control" asp-items="ViewBag.ManagersAndCEO" style="display:none;">
+                        <option selected disabled>Select a manager</option>
+                        <option>No Manager</option>
+                    </select>
+                    <select id="ceoSelect" asp-for="ManagerId" class="form-control" style="display:none;" disabled>
+                        <option>No manager</option>
+                    </select>
+                </div>
             </div>
+
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Save changes" class="btn btn-primary" />
             </div>
         </form>
     </div>
