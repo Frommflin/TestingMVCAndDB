@@ -1,8 +1,8 @@
 ﻿
 // Listening for change-event on radiobuttons on Create page and calling for relevant changes
-function AdjustCreateForm(role) {
-	LimitAvailRanks(role.value, 'create');
-	LimitAvailManagers(role.value, 'create');
+function AdjustForm(role, page) {
+	LimitAvailRanks(role.value, page);
+	LimitAvailManagers(role.value, page);
 }
 
 // Limiting available ranks
@@ -11,11 +11,11 @@ function LimitAvailRanks(role, page) {
 	let str;
 
 	if (role == "Employee") {
-		str = '<input type="number" name="rank" min="1" max="5" value="1" class="form-control" />';
+		str = `<input type="number" name="${page}Rank" min="1" max="5" value="1" class="form-control" />`;
 	} else if (role == "Manager") {
-		str = '<input type="number" name="rank" min="6" max="9" value="6" class="form-control" />';
+		str = `<input type="number" name="${page}Rank" min="6" max="9" value="6" class="form-control" />`;
 	} else if (role == "CEO") {
-		str = '<input type="number" name="rank" min="10" max="10" value="10" class="form-control" />';
+		str = `<input type="number" name="${page}Rank" min="10" max="10" value="10" class="form-control" />`;
 	}
 	rank.innerHTML = str;
 }

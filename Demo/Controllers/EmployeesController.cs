@@ -55,9 +55,10 @@ namespace Demo.Controllers
 
         // POST: Employees/Create
         [HttpPost]
-        public async Task<IActionResult> Create(string firstName, string lastName, string role, int rank, string managerId)
+        public async Task<IActionResult> Create(string firstName, string lastName, string role, int createRank, string managerId)
         {
-            Employee employee = Utilities.CreateEmployee(firstName, lastName, role, rank, managerId);
+            
+            Employee employee = Utilities.CreateEmployee(firstName, lastName, role, createRank, managerId);
 
             if (ModelState.IsValid)
             {
@@ -65,8 +66,8 @@ namespace Demo.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-
-            return View(employee);
+            
+            return View();
         }
 
         // GET: Employees/Edit/5

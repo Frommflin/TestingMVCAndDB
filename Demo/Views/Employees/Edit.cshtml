@@ -4,18 +4,34 @@
     ViewData["Title"] = "Edit";
     string role;
     decimal salary = Model.Salary;
+    int min;
+    int max;
+    decimal salaryCoefficient;
+    int rank;
 }
 @if (Model.IsCEO == true)
 {
     role = "CEO";
+    min = 10;
+    max = 10;
+    salaryCoefficient = 2.725M;
+    rank = (int)(salary / salaryCoefficient);
 }
 else if (Model.IsManager == true)
 {
     role = "Manager";
+    min = 6;
+    max = 9;
+    salaryCoefficient = 1.725M;
+    rank = (int)(salary / salaryCoefficient);
 }
 else
 {
     role = "Employee";
+    min = 1;
+    max = 15;
+    salaryCoefficient = 1.125M;
+    rank = (int)(salary / salaryCoefficient);
 }
 
 <h1>Edit Employee</h1>
@@ -42,22 +58,22 @@ else
                     <div>
                         @if(role == "Employee")
                         {
-                            <input type="radio" id="EditEmployee" name="editRole" value="Employee" onchange="AdjustEditForm(this)" checked />
+                            <input type="radio" id="EditEmployee" name="editRole" value="Employee" onchange="AdjustForm(this, 'edit')" checked />
                         }
                         else
                         {
-                            <input type="radio" id="EditEmployee" name="editRole" value="Employee" onchange="AdjustEditForm(this)" />
+                            <input type="radio" id="EditEmployee" name="editRole" value="Employee" onchange="AdjustForm(this, 'edit')" />
                         }
                         Employee (rank 1-5)
                     </div>
                     <div>
                         @if (role == "Manager")
                         {
-                            <input type="radio" id="EditManager" name="editRole" value="Manager" onchange="AdjustEditForm(this)" checked/>
+                            <input type="radio" id="EditManager" name="editRole" value="Manager" onchange="AdjustForm(this, 'edit')" checked />
                         }
                         else
                         {
-                            <input type="radio" id="EditManager" name="editRole" value="Manager" onchange="AdjustEditForm(this)" />
+                            <input type="radio" id="EditManager" name="editRole" value="Manager" onchange="AdjustForm(this, 'edit')" />
                         }
                          Manager (rank 6-9)
                     </div>
@@ -70,11 +86,11 @@ else
                         {
                             @if (role == "CEO")
                             {
-                                <input type="radio" id="EditCEO" name="editRole" value="CEO" onchange="AdjustEditForm(this)" checked />
+                                <input type="radio" id="EditCEO" name="editRole" value="CEO" onchange="AdjustForm(this, 'edit')" checked />
                             }
                             else
                             {
-                                <input type="radio" id="EditCEO" name="editRole" value="CEO" onchange="AdjustEditForm(this)" />
+                                <input type="radio" id="EditCEO" name="editRole" value="CEO" onchange="AdjustForm(this, 'edit')" />
                             }
                         }
                         CEO (rank 10)
@@ -82,10 +98,10 @@ else
                 </div>
             </div>
             <div class="form-group">
-                <div>Current rank: (Current rank here)</div> @* Fix this to dynamic value *@
+                <div>Current rank: @role (rank @rank)</div> @* Fix this to dynamic value *@
                 <label class="control-label">New rank</label>
-                <div id="rankDiv">
-                    <input type="number" name="rank" min="1" max="5" value="1" class="form-control" />
+                <div id="editRankDiv">
+                    <input type="number" name="editRank" min=@min max=@max value=@min class="form-control" />
                 </div>
             </div>
             <div class="form-group">

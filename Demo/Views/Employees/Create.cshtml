@@ -24,10 +24,10 @@
                 <label class="control-label"> Role </label>
                 <div>
                     <div>
-                        <input type="radio" name="role" value="Employee" checked onchange="AdjustCreateForm(this)" /> Employee (rank 1-5) @* Default value *@
+                        <input type="radio" name="role" value="Employee" checked onchange="AdjustForm(this, 'create')" /> Employee (rank 1-5) @* Default value *@
                     </div>
                     <div>
-                        <input type="radio" name="role" value="Manager" onchange="AdjustCreateForm(this)" /> Manager (rank 6-9)
+                        <input type="radio" name="role" value="Manager" onchange="AdjustForm(this, 'create')" /> Manager (rank 6-9)
                     </div>
                     <div>
                         @if(ViewBag.CEOExists == true)
@@ -35,7 +35,7 @@
                             <input type="radio" name="role" value="CEO" disabled />
                         }
                         else{
-                            <input type="radio" name="role" value="CEO" onchange="AdjustCreateForm(this)" />
+                            <input type="radio" name="role" value="CEO" onchange="AdjustForm(this, 'create')" />
                         }
                         CEO (rank 10)
                     </div>
@@ -44,7 +44,7 @@
             <div class="form-group">
                 <label class="control-label">Rank</label>
                 <div id="createRankDiv">
-                    <input type="number" name="rank" min="1" max="5" value="1" class="form-control" />
+                    <input type="number" name="createRank" min="1" max="5" value="1" class="form-control" />
                 </div>
             </div>
             <div class="form-group">

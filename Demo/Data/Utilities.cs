@@ -13,19 +13,19 @@ namespace Demo.Data
             employee.LastName = lastName;
 
             // Setting role-dependent data
-            if (role == "Manager")
-            {
-                employee.IsCEO = false;
-                employee.IsManager = true;
-
-                salaryCoefficient = 1.725;
-            }
-            else if (role == "CEO")
+            if (role == "CEO")
             {
                 employee.IsManager = false;
                 employee.IsCEO = true;
 
                 salaryCoefficient = 2.725;
+            }
+            else if (role == "Manager")
+            {
+                employee.IsCEO = false;
+                employee.IsManager = true;
+
+                salaryCoefficient = 1.725;
             }
             else
             {
