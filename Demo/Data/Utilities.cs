@@ -5,7 +5,7 @@ namespace Demo.Data
 {
     public class Utilities
     {
-        public static Employee CreateEmployee(int identity, string firstName, string lastName, string role, int rank, string managerId)
+        public static Employee CreateEmployee(int identity, string firstName, string lastName, string role, int rank, int managerId)
         {
             Employee employee = new Employee();
             double salaryCoefficient;
@@ -40,10 +40,11 @@ namespace Demo.Data
             // Calculate salary
             employee.Salary = (decimal)(rank * salaryCoefficient);
 
-            //Assign ManagerId if incoming value is an int (possible to come in empty in case of CEO and Manager)
-            if (int.TryParse(managerId, out int id))
+            if ( managerId != 0) {
+                employee.ManagerId = managerId;
+            } else
             {
-                employee.ManagerId = id;
+                employee.ManagerId = null;
             }
 
             return employee;

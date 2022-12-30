@@ -26,15 +26,15 @@ function LimitAvailManagers(role, page) {
 	let manager = document.getElementById( page + 'ManagerSelect' );
 	let ceo = document.getElementById( page + 'CeoSelect' );
 
-	if (role.value == 'Employee') {
+	if (role == 'Employee') {
 		employee.style.display = 'block';
 		manager.style.display = 'none';
 		ceo.style.display = 'none';
-	} else if (role.value == 'Manager') {
+	} else if (role == 'Manager') {
 		employee.style.display = 'none';
 		manager.style.display = 'block';
 		ceo.style.display = 'none';
-	} else if (role.value == 'CEO') {
+	} else if (role == 'CEO') {
 		employee.style.display = 'none';
 		manager.style.display = 'none';
 		ceo.style.display = 'block';

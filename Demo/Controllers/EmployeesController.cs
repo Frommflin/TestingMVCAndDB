@@ -55,7 +55,7 @@ namespace Demo.Controllers
 
         // POST: Employees/Create
         [HttpPost]
-        public async Task<IActionResult> Create(int id, string firstName, string lastName, string role, int createRank, string managerId)
+        public async Task<IActionResult> Create(int id, string firstName, string lastName, string role, int createRank, int managerId)
         {
             
             Employee employee = Utilities.CreateEmployee(id, firstName, lastName, role, createRank, managerId);

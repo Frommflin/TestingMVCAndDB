@@ -60,10 +60,10 @@
                     </select>
                     <select id="createManagerSelect" asp-for="ManagerId" class="form-control" asp-items="ViewBag.ManagersAndCEO" style="display:none;">
                         <option selected disabled>Select a manager</option>
-                        <option>No Manager</option>
+                        <option value="0">No Manager</option>
                     </select>
                     <select id="createCeoSelect" asp-for="ManagerId" class="form-control" style="display:none;" disabled>
-                        <option>No manager</option>
+                        <option value="0">No manager</option>
                     </select>
                 </div>
             </div>
