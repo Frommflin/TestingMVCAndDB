@@ -21,16 +21,6 @@ namespace Demo.Controllers
             // Ordering data by role. CEO -> Manager -> Employee
             var demoContext = _context.Employees.Include(e => e.Manager).OrderByDescending(x => x.IsCEO).ThenByDescending(x => x.IsManager);
 
-            Employee ceo = _context.Employees.FirstOrDefault(x => x.IsCEO == true);
-            if (ceo == null)
-            {
-                ViewData["CEOExists"] = false;
-            }
-            else
-            {
-                ViewData["CEOExists"] = true;
-            }
-
             return View(await demoContext.ToListAsync());
         }
 
