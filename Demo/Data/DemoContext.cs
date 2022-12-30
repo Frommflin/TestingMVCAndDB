@@ -14,6 +14,6 @@ namespace Demo.Data
         {
         }
 
-        public DbSet<Employee> Employees { get; set; } = default!;
+        public DbSet<Employee> Employees { get; set; }
     }
 }

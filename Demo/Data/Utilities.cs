@@ -1,14 +1,16 @@
 ﻿using Demo.Models;
+using System.Security.Principal;
 
 namespace Demo.Data
 {
     public class Utilities
     {
-        public static Employee CreateEmployee(string firstName, string lastName, string role, int rank, string managerId)
+        public static Employee CreateEmployee(int identity, string firstName, string lastName, string role, int rank, string managerId)
         {
             Employee employee = new Employee();
             double salaryCoefficient;
 
+            employee.Id = identity;
             employee.FirstName = firstName;
             employee.LastName = lastName;
 

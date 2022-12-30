@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo.Models
 {
     public class Employee
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Display(Name = "Employee ID")]
         public int Id { get; set; }
 
@@ -27,7 +30,8 @@ namespace Demo.Models
 
         [Display(Name = "Manager")]
         public int? ManagerId { get; set; }
-        public Employee Manager { get; set; }
+
+        public Employee? Manager { get; set; }
 
     }
 }
