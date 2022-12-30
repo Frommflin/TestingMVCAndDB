@@ -6,8 +6,12 @@
     int rank;
     decimal salary = Model.Salary;
     decimal salaryCoefficient;
+    string fullManagerInfo = "No manager";
 }
-
+@if (Model.Manager != null)
+{
+    fullManagerInfo = Model.Manager.FirstName + " " + Model.Manager.LastName + " ( ID " + Model.ManagerId + ")";
+}
 @if (Model.IsCEO == true)
 {
     role = "CEO";
@@ -61,9 +65,7 @@ else
             @Html.DisplayNameFor(model => model.Manager)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Manager.FirstName) 
-            @Html.DisplayFor(model => model.Manager.LastName)
-            ( @Html.DisplayFor(model => model.Manager.Id) )
+            @fullManagerInfo
         </dd>
     </dl>
     

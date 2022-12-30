@@ -5,7 +5,48 @@ namespace Demo.Data
 {
     public class Utilities
     {
-        private static double salaryCoefficient;
+        public static void SetRole(Employee employee, string role)
+        {
+            // Setting role-dependent data
+            if (role == "CEO")
+            {
+                employee.IsManager = false;
+                employee.IsCEO = true;
+            }
+            else if (role == "Manager")
+            {
+                employee.IsCEO = false;
+                employee.IsManager = true;
+            }
+            else
+            {
+                employee.IsCEO = false;
+                employee.IsManager = false;
+            }
+        }
+
+        public static void SetSalary(Employee employee, string role, int rank)
+        {
+            double salaryCoefficient;
+
+            // Setting role-dependent data
+            if (role == "CEO")
+            {
+                salaryCoefficient = 2.725;
+            }
+            else if (role == "Manager")
+            {
+                salaryCoefficient = 1.725;
+            }
+            else
+            {
+                salaryCoefficient = 1.125;
+            }
+
+            // Calculating salary
+            employee.Salary = (decimal)(rank * salaryCoefficient);
+        }
+
         public static Employee CreateEmployee(int identity, string firstName, string lastName, string role, int rank, int managerId)
         {
             Employee employee = new Employee();
@@ -15,32 +56,6 @@ namespace Demo.Data
             employee.FirstName = firstName;
             employee.LastName = lastName;
 
-            // Setting role-dependent data
-            if (role == "CEO")
-            {
-                employee.IsManager = false;
-                employee.IsCEO = true;
-
-                salaryCoefficient = 2.725;
-            }
-            else if (role == "Manager")
-            {
-                employee.IsCEO = false;
-                employee.IsManager = true;
-
-                salaryCoefficient = 1.725;
-            }
-            else
-            {
-                employee.IsCEO = false;
-                employee.IsManager = false;
-
-                salaryCoefficient = 1.125;
-            }
-
-            // Calculate salary
-            employee.Salary = (decimal)(rank * salaryCoefficient);
-
             if ( managerId != 0) {
                 employee.ManagerId = managerId;
             } else
@@ -48,39 +63,16 @@ namespace Demo.Data
                 employee.ManagerId = null;
             }
 
+            SetRole(employee, role);
+            SetSalary(employee, role, rank);
+
             return employee;
         }
 
-        internal static Employee EditEmployee(Employee employee, string firstName, string lastName, string role, int rank, int managerId)
+        public static Employee EditEmployee(Employee employee, string firstName, string lastName, string role, int rank, int managerId)
         {
             employee.FirstName = firstName;
             employee.LastName = lastName;
-
-            // Setting role-dependent data
-            if (role == "CEO")
-            {
-                employee.IsManager = false;
-                employee.IsCEO = true;
-
-                salaryCoefficient = 2.725;
-            }
-            else if (role == "Manager")
-            {
-                employee.IsCEO = false;
-                employee.IsManager = true;
-
-                salaryCoefficient = 1.725;
-            }
-            else
-            {
-                employee.IsCEO = false;
-                employee.IsManager = false;
-
-                salaryCoefficient = 1.125;
-            }
-
-            // Calculate salary
-            employee.Salary = (decimal)(rank * salaryCoefficient);
 
             if (managerId == 0 || managerId == employee.Id) // incoming manager is 0 or same as edited employee
             {
@@ -90,6 +82,9 @@ namespace Demo.Data
             {
                 employee.ManagerId = managerId; 
             }
+
+            SetRole(employee, role);
+            SetSalary(employee, role, rank);
 
             return employee;
         }
