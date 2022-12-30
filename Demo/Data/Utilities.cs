@@ -51,7 +51,6 @@ namespace Demo.Data
         {
             Employee employee = new Employee();
             
-
             employee.Id = identity;
             employee.FirstName = firstName;
             employee.LastName = lastName;

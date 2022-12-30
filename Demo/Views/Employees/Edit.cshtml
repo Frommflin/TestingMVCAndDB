@@ -11,11 +11,16 @@
     string fullManagerInfo = "No manager";
 }
 
+@* Creating a string contining managers full name and ID, if manager exists *@
 @if(Model.Manager != null)
 {
     fullManagerInfo = Model.Manager.FirstName + " " + Model.Manager.LastName + " ( ID " + Model.ManagerId + ")";
 }
 
+@*
+    Saving role and rank in variables for easy printout for user
+    Setting limiting data for number-input
+*@
 @if (Model.IsCEO == true)
 {
     role = "CEO";

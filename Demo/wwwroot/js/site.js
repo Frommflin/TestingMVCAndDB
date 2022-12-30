@@ -1,8 +1,4 @@
-﻿function ShowError(message) {
-	alert(message);
-}
-
-
+﻿
 // Listening for change-event on radiobuttons on Create page and calling for relevant changes
 function AdjustForm(role, page) {
 	LimitAvailRanks(role.value, page);

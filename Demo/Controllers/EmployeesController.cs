@@ -38,9 +38,11 @@ namespace Demo.Controllers
         // GET: Employees/Create
         public IActionResult Create()
         {
+            // Passing throught lists of managers for 'regular' employees and for managers
             ViewData["Managers"] = new SelectList(_context.Employees.Where(x => x.IsManager == true), "Id", "FirstName", "Id", "Id");
             ViewData["ManagersAndCEO"] = new SelectList(_context.Employees.Where(x => (x.IsCEO == true || x.IsManager == true)), "Id", "FirstName", "Id", "Id");
 
+            // Checking if any employee is a CEO
             Employee ceo = _context.Employees.FirstOrDefault(x => x.IsCEO == true);
             if(ceo == null)
             {
@@ -58,7 +60,6 @@ namespace Demo.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(int id, string firstName, string lastName, string role, int createRank, int managerId)
         {
-            
             Employee employee = Utilities.CreateEmployee(id, firstName, lastName, role, createRank, managerId);
 
             if (ModelState.IsValid)
@@ -85,9 +86,11 @@ namespace Demo.Controllers
                 return NotFound();
             }
 
+            // Passing throught lists of managers for 'regular' employees and for managers
             ViewData["Managers"] = new SelectList(_context.Employees.Where(x => x.IsManager == true ), "Id", "FirstName", "Id", "Id");
             ViewData["ManagersAndCEO"] = new SelectList(_context.Employees.Where(x => (x.IsCEO == true || x.IsManager == true)), "Id", "FirstName", "Id", "Id");
 
+            // Checking if any employee is a CEO
             Employee ceo = _context.Employees.FirstOrDefault(x => x.IsCEO == true);
             if (ceo == null || employee.IsCEO == true)
             {
@@ -109,6 +112,8 @@ namespace Demo.Controllers
             {
                 return NotFound();
             }
+
+            // Collecting a list of employees with the Edit-Employee as their manager
             List<Employee> isManagerToOthers = _context.Employees.Where(x => x.ManagerId == employee.Id).ToList();
 
             if(isManagerToOthers.Count == 0 || editRole == currentRole) // If no others are managed or the currentRole is same as editRole
@@ -141,7 +146,7 @@ namespace Demo.Controllers
         // GET: Employees/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Employees == null)
+            if (id == null || _context.Employees == null) // if incoming id is empty och table 'Employees' don't exist
             {
                 return NotFound();
             }
@@ -149,7 +154,7 @@ namespace Demo.Controllers
             var employee = await _context.Employees
                 .Include(e => e.Manager)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (employee == null)
+            if (employee == null) // if entered id doesnt exist in table 'Employees'
             {
                 return NotFound();
             }
@@ -161,11 +166,6 @@ namespace Demo.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Employees == null)
-            {
-                return Problem("Entity set 'DemoContext.Employee'  is null.");
-            }
-
             var employee = await _context.Employees.FindAsync(id);
             List<Employee> isManagerToOthers = _context.Employees.Where(x => x.ManagerId == employee.Id).ToList(); //Collection all employees using this employee as manager
 

@@ -8,10 +8,13 @@
     decimal salaryCoefficient;
     string fullManagerInfo = "No manager";
 }
+@* Creating a string contining managers full name and ID, if manager exists *@
 @if (Model.Manager != null)
 {
     fullManagerInfo = Model.Manager.FirstName + " " + Model.Manager.LastName + " ( ID " + Model.ManagerId + ")";
 }
+
+@* Saving role and rank in variables for easy printout for user *@
 @if (Model.IsCEO == true)
 {
     role = "CEO";
