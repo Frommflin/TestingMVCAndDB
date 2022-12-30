@@ -8,6 +8,7 @@ namespace Demo.Controllers
 {
     public class EmployeesController : Controller
     {
+        private static string errorMessage = "";
         private readonly DemoContext _context;
 
         public EmployeesController(DemoContext context)
@@ -21,7 +22,17 @@ namespace Demo.Controllers
             // Ordering data by role. CEO -> Manager -> Employee
             var demoContext = _context.Employees.Include(e => e.Manager).OrderByDescending(x => x.IsCEO).ThenByDescending(x => x.IsManager);
 
+            ViewData["Error"] = errorMessage;
+
             return View(await demoContext.ToListAsync());
+        }
+
+        // GET: Employees/ReturnToIndex
+        // Action to reset errormessage before returning to Index page
+        public IActionResult ReturnToIndex()
+        {
+            errorMessage = "";
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Employees/Create
@@ -54,7 +65,7 @@ namespace Demo.Controllers
             {
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ReturnToIndex));
             }
             
             return View();
@@ -74,8 +85,8 @@ namespace Demo.Controllers
                 return NotFound();
             }
 
-            ViewData["Managers"] = new SelectList(_context.Employees.Where(x => x.IsManager == true), "Id", "Id");
-            ViewData["ManagersAndCEO"] = new SelectList(_context.Employees.Where(x => (x.IsCEO == true || x.IsManager == true)), "Id", "Id");
+            ViewData["Managers"] = new SelectList(_context.Employees.Where(x => x.IsManager == true ), "Id", "FirstName", "Id", "Id");
+            ViewData["ManagersAndCEO"] = new SelectList(_context.Employees.Where(x => (x.IsCEO == true || x.IsManager == true)), "Id", "FirstName", "Id", "Id");
 
             Employee ceo = _context.Employees.FirstOrDefault(x => x.IsCEO == true);
             if (ceo == null || employee.IsCEO == true)
@@ -92,21 +103,23 @@ namespace Demo.Controllers
 
         // POST: Employees/Edit/5
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, string firstName, string lastName, string role, int rank, string managerId, [Bind("Id")] Employee employee)
+        public async Task<IActionResult> Edit(int id, string firstName, string lastName, string currentRole, string editRole, int editRank, int managerId, [Bind("Id")] Employee employee)
         {
             if (id != employee.Id)
             {
                 return NotFound();
             }
+            List<Employee> isManagerToOthers = _context.Employees.Where(x => x.ManagerId == employee.Id).ToList();
 
-            employee = Utilities.EditEmployee(employee, firstName, lastName, role, rank, managerId);
-
-            if (ModelState.IsValid)
+            if(isManagerToOthers.Count == 0 || editRole == currentRole) // If no others are managed or the currentRole is same as editRole
             {
+                employee = Utilities.EditEmployee(employee, firstName, lastName, editRole, editRank, managerId);
+
                 try
                 {
                     _context.Update(employee);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(ReturnToIndex));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -114,11 +127,11 @@ namespace Demo.Controllers
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
                 }
+            }
+            else // can't edit because employee is managing others
+            {
+                errorMessage = "Changes were unable to be saved because the chosen person is a manager to other employees!";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -146,21 +159,28 @@ namespace Demo.Controllers
 
         // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Employees == null)
             {
                 return Problem("Entity set 'DemoContext.Employee'  is null.");
             }
+
             var employee = await _context.Employees.FindAsync(id);
-            if (employee != null)
+            List<Employee> isManagerToOthers = _context.Employees.Where(x => x.ManagerId == employee.Id).ToList(); //Collection all employees using this employee as manager
+
+            if (isManagerToOthers.Count != 0) //Returns to index with error message if count is not 0
+            {
+                errorMessage = "Unable to delete person from records because he or she is a manager to other employees!";
+                return RedirectToAction(nameof(Index));
+            }
+            else if (employee != null)
             {
                 _context.Employees.Remove(employee);
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(ReturnToIndex));
         }
 
         private bool EmployeeExists(int id)

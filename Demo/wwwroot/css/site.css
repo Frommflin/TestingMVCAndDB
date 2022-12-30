@@ -17,7 +17,11 @@ body {
   margin-bottom: 60px;
 }
 
-label, .btn-primary {
+#error{
+    color: red;
+}
+
+label, .btn{
     margin-top: 1rem;
 }
 label {

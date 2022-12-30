@@ -40,7 +40,6 @@ else
 <div class="row" onload="alert('loaded edit page')">
     <div class="col-md-4">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
@@ -51,6 +50,11 @@ else
                 <label asp-for="LastName" class="control-label"></label>
                 <input asp-for="LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Current employment status: </label>
+                @role, rank @rank
+                <input type="hidden" name="currentRole" value="@role" />
             </div>
             <div class="form-group">
                 <label class="control-label"> Role </label>
@@ -98,37 +102,64 @@ else
                 </div>
             </div>
             <div class="form-group">
-                <div>Current rank: @role (rank @rank)</div> @* Fix this to dynamic value *@
-                <label class="control-label">New rank</label>
+                <label class="control-label">Rank</label>
                 <div id="editRankDiv">
-                    <input type="number" name="editRank" min=@min max=@max value=@min class="form-control" />
+                    <input type="number" name="editRank" min=@min max=@max value=@rank class="form-control" />
                 </div>
             </div>
             <div class="form-group">
                 <label asp-for="ManagerId" class="control-label"></label>
                 <div>
-                    <select id="employeeSelect" asp-for="ManagerId" class="form-control" asp-items="ViewBag.Managers">
-                        <option selected disabled>Select a manager</option>
-                    </select>
-                    <select id="managerSelect" asp-for="ManagerId" class="form-control" asp-items="ViewBag.ManagersAndCEO" style="display:none;">
-                        <option selected disabled>Select a manager</option>
-                        <option>No Manager</option>
-                    </select>
-                    <select id="ceoSelect" asp-for="ManagerId" class="form-control" style="display:none;" disabled>
-                        <option>No manager</option>
-                    </select>
+
+                    @if (role == "Employee")
+                    {
+                        <select id="editEmployeeSelect" asp-for="ManagerId" class="form-control" asp-items="ViewBag.Managers">
+                            <option selected disabled>Select a manager</option>
+                        </select>
+                    }
+                    else
+                    {
+                        <select id="editEmployeeSelect" asp-for="ManagerId" class="form-control" asp-items="ViewBag.Managers" style="display:none;">
+                            <option selected disabled>Select a manager</option>
+                        </select>
+                    }
+
+                    @if(role == "Manager")
+                    {
+                        <select id="editManagerSelect" asp-for="ManagerId" class="form-control" asp-items="ViewBag.ManagersAndCEO">
+                            <option selected disabled>Select a manager</option>
+                            <option>No Manager</option>
+                        </select>
+                    }
+                    else
+                    {
+                        <select id="editManagerSelect" asp-for="ManagerId" class="form-control" asp-items="ViewBag.ManagersAndCEO" style="display:none;">
+                            <option selected disabled>Select a manager</option>
+                            <option>No Manager</option>
+                        </select>
+                    }
+
+                    @if (role == "CEO")
+                    {
+                        <select id="editCeoSelect" asp-for="ManagerId" class="form-control" disabled>
+                            <option>No manager</option>
+                        </select>
+                    }
+                    else
+                    {
+                        <select id="editCeoSelect" asp-for="ManagerId" class="form-control" style="display:none;" disabled>
+                            <option>No manager</option>
+                        </select>
+                    }
                 </div>
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Save changes" class="btn btn-primary" />
+                <input type="submit" value="Save changes" class="btn btn-success" />
+                <a asp-action="ReturnToIndex" class="btn btn-primary">Back to start</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
