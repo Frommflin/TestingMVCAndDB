@@ -79,7 +79,7 @@ namespace Demo.Controllers
                 return NotFound();
             }
 
-            Employee employee = await _context.Employees.FindAsync(id);
+            Employee employee = await _context.Employees.Include(x => x.Manager).FirstOrDefaultAsync(x => x.Id == id);
             if (employee == null)
             {
                 return NotFound();

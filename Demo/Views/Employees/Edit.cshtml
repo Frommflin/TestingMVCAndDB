@@ -8,7 +8,14 @@
     int max;
     decimal salaryCoefficient;
     int rank;
+    string fullManagerInfo = "No manager";
 }
+
+@if(Model.Manager != null)
+{
+    fullManagerInfo = Model.Manager.FirstName + " " + Model.Manager.LastName + " ( ID " + Model.ManagerId + ")";
+}
+
 @if (Model.IsCEO == true)
 {
     role = "CEO";
@@ -52,9 +59,14 @@ else
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label>Current employment status: </label>
-                @role, rank @rank
-                <input type="hidden" name="currentRole" value="@role" />
+                <label>Current employment status </label>
+                <div>
+                    <b>Role: </b> @role, rank @rank
+                    <input type="hidden" name="currentRole" value="@role" />
+                </div>
+                <div>
+                    <b>Manager: </b> @fullManagerInfo
+                </div>
             </div>
             <div class="form-group">
                 <label class="control-label"> Role </label>
@@ -108,33 +120,28 @@ else
                 </div>
             </div>
             <div class="form-group">
-                <label asp-for="ManagerId" class="control-label"></label>
+                <label asp-for="ManagerId" class="control-label">Select a Manager</label>
                 <div>
-
                     @if (role == "Employee")
                     {
                         <select id="editEmployeeSelect" asp-for="ManagerId" class="form-control" asp-items="ViewBag.Managers">
-                            <option selected disabled>Select a manager</option>
                         </select>
                     }
                     else
                     {
                         <select id="editEmployeeSelect" asp-for="ManagerId" class="form-control" asp-items="ViewBag.Managers" style="display:none;">
-                            <option selected disabled>Select a manager</option>
                         </select>
                     }
 
                     @if(role == "Manager")
                     {
                         <select id="editManagerSelect" asp-for="ManagerId" class="form-control" asp-items="ViewBag.ManagersAndCEO">
-                            <option selected disabled>Select a manager</option>
                             <option>No Manager</option>
                         </select>
                     }
                     else
                     {
                         <select id="editManagerSelect" asp-for="ManagerId" class="form-control" asp-items="ViewBag.ManagersAndCEO" style="display:none;">
-                            <option selected disabled>Select a manager</option>
                             <option>No Manager</option>
                         </select>
                     }
