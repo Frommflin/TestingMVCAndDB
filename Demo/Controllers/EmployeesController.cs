@@ -37,8 +37,8 @@ namespace Demo.Controllers
         // GET: Employees/Create
         public IActionResult Create()
         {
-            ViewData["Managers"] = new SelectList(_context.Employees.Where(x => x.IsManager == true), "Id", "Id");
-            ViewData["ManagersAndCEO"] = new SelectList(_context.Employees.Where(x => (x.IsCEO == true || x.IsManager == true)), "Id", "Id");
+            ViewData["Managers"] = new SelectList(_context.Employees.Where(x => x.IsManager == true), "Id", "FirstName", "Id", "Id");
+            ViewData["ManagersAndCEO"] = new SelectList(_context.Employees.Where(x => (x.IsCEO == true || x.IsManager == true)), "Id", "FirstName", "Id", "Id");
 
             Employee ceo = _context.Employees.FirstOrDefault(x => x.IsCEO == true);
             if(ceo == null)
